@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operating Bot 公式サイト</title>
+<style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      position: relative;
+      background: linear-gradient(135deg, #6e8efb, #a777e3);
+      color: white; /* 文字の色を白に設定 */
+    }
+    .header {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #333;
+      color: #fff;
+      padding: 10px;
+      border-radius: 4px;
+      display: flex;
+      gap: 10px; /* ボタン間の余白を設定 */
+    }
+    .header a, .header button {
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 15px;
+      background-color: #444;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      display: inline-block;
+    }
+    .header a:hover, .header button:hover {
+      background-color: #555;
+    }
+    .form-container {
+      max-width: 400px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      display: none; /* 最初は非表示 */
+      color: #333; /* フォーム内のテキスト色を黒に設定 */
+    }
+    .form-container h2 {
+      text-align: center;
+    }
+    .form-container input[type="text"],
+    .form-container textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    .form-container button {
+      width: 100%;
+      padding: 10px;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .form-container button:hover {
+      background-color: #555;
+    }
+
+    .greeting-container {
+      text-align: center;
+      margin-bottom: 20px; /* 余白を追加 */
+    }
+
+    .greeting {
+      font-size: 48px;
+      font-weight: bold;
+      margin-bottom: 10px; /* 余白を追加 */
+    }
+
+    .sub-greeting {
+      font-size: 24px;
+      margin-top: 10px;
+    }
+
+    /* 要素非表示用のクラス */
+    .hidden {
+      display: none !important;
+    }
+
+    /* よくあるご質問のスタイル */
+    .faq-container {
+      max-width: 800px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      display: none; /* 最初は非表示 */
+      color: #333; /* テキスト色を黒に設定 */
+      margin-top: 40px; /* 上部の余白を増やす */
+    }
+    .faq-columns {
+      display: flex;
+      justify-content: space-between;
+    }
+    .faq-column {
+      flex: 1;
+      margin-right: 20px;
+    }
+    .faq-column ul {
+      padding: 0;
+      list-style-type: none;
+    }
+    .faq-column h4 {
+      margin-top: 0;
+    }
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: #333;
+      color: #fff;
+      padding: 5px 10px;
+      text-align: center;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2); /* 下部に影を追加 */
+    }
+
+    .footer a {
+      color: #fff;
+      text-decoration: none;
+      margin: 0 10px;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    .loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed; /* 画面全体に対して固定位置に配置 */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #f4f4f4;
+  font-family: 'Noto Sans JP', sans-serif;
+  color: #333;
+  z-index: 9999; /* 他の要素よりも手前に表示 */
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-top: 4px solid #333;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+
+</style>
+</head>
+<body>
+
+<header class="header">
+  <button id="report-link">不正利用を通報する</button>
+  <button id="question-link">質問する</button>
+  <button id="faq-link">よくあるご質問</button>
+  <a href="https://yuuseibe.github.io/endula/eula.html#">利用規約</a>
+  <a href="https://discord.com/oauth2/authorize?client_id=1247869959569145946&permissions=1759218604441591&response_type=code&redirect_uri=https%3A%2F%2Fyuuseibe.github.io%2Fendula%2Feula.html&integration_type=0&scope=bot+email">Botを追加する</a>
+  <a href="https://yuuseibe.github.io/reporteng/UDFONT.html#home" >English</a>
+  <a href="#home" id="home-link">ホーム</a>
+</header>
+
+<div class="greeting-container">
+  <div class="greeting">こんにちは</div>
+  <div class="sub-greeting">Operating Bot作成委員会です</div>
+  <div class="sub-greeting">御用がありますか？</div>
+  <div class="sub-greeting">１を押すとボタンが非表示になりますよ。もう一回押したら表示されます</div>
+</div>
+
+<div class="form-container" id="report-form">
+  <h2>不正利用を報告&フィードバックを送信する</h2>
+  <form id="report-submit-form">
+    <input type="text" placeholder="お名前" id="report-name" required>
+    <textarea placeholder="不正利用の詳細&フィードバック" id="report-details" rows="5" required></textarea>
+    <button type="submit">送信</button>
+  </form>
+</div>
+
+<div class="form-container" id="question-form">
+  <h2>質問する</h2>
+  <div style="color: red;">警告! まず、よくあるご質問をご確認してください</div>
+  <form id="question-submit-form">
+    <input type="text" placeholder="お名前" id="question-name" required>
+    <textarea placeholder="質問内容" id="question-details" rows="5" required></textarea>
+    <button type="submit">送信</button>
+  </form>
+</div>
+
+
+
+<div class="faq-container" id="faq-content">
+  <h2>よくあるご質問</h2>
+  <div class="faq-columns">
+    <div class="faq-column">
+      <ul>
+        <li>
+          <h4>よくあるご質問リスト<h4>
+            <li>
+              <li>
+          <h4>Q: このサイトの利用には料金がかかりますか？</h4>
+          <p>A: いいえ、このサイトの利用は無料です。</p>
+        </li>
+        <li>
+          <h4>Q: Botの機能について詳しく教えてください。</h4>
+          <p>A: Botは通報機能と質問機能を提供しており、それぞれ適切な情報を管理者に送信します。</p>
+        </li>
+        <li>
+          <h4>Q: 通報した内容はどのように処理されますか？</h4>
+          <p>A: 通報内容は管理者によって確認され、適切な対応が取られます。</p>
+        </li>
+        <li>
+          <h4>Q: 質問した内容について返信を受け取ることはできますか？</h4>
+          <p>A: はい、質問内容に関する回答はDiscordを通じて返信されます。</p>
+        </li>
+        <li>
+          <h4>Q: 通報した後に追加の情報を提供したい場合はどうすればよいですか？</h4>
+          <p>A: 通報フォームまたは質問フォームから再度該当する内容を送信してください。最初の送信は無効となります。</p>
+        </li>
+        <li>
+          <h4>Q: 利用規約はどこで確認できますか？</h4>
+          <p>A: 利用規約は「<a href="https://yuuseibe.github.io/endula/eula.html#">こちら</a>」からご確認いただけます。</p>
+        </li>
+        <li>
+          <h4>Q: Botの追加方法について教えてください。</h4>
+          <p>A: ヘッダーの「<a href="https://discord.com/oauth2/authorize?client_id=1247869959569145946&permissions=1759218604441591&response_type=code&redirect_uri=https%3A%2F%2Fyuuseibe.github.io%2Fendula%2Feula.html&integration_type=0&scope=bot+email">Botを追加する</a>」リンクからBotを追加できます。</p>
+        </li>
+        <h5>Operating Bot制作委員会<h5>
+      </ul>
+    </div>
+    <div class="faq-column">
+      <ul>
+        <li>
+          <li>
+
+          <h4>Q: このサイトのデータはどのように保護されていますか？</h4>
+          <p>A: このサイトでは、データの保護とプライバシーの重要性を確保するために適切な措置を講じています。</p>
+        </li>
+        <li>
+          <h4>Q: サイトの問題やバグを報告したいです。</h4>
+          <p>A: 問題やバグについては質問フォームからお知らせください。可能な限り早急に対応します。</p>
+        </li>
+        <li>
+          <h4>Q: 通報や質問に対する返信に時間がかかる場合がありますか？</h4>
+          <p>A: 通報や質問については、通常24時間以内に回答または対応いたしますが、状況によってはそれ以上の時間を要する場合があります。</p>
+        </li>
+        <li>
+          <h4>Q: プライバシーポリシーはありますか？</h4>
+          <p>A: プライバシーポリシーについては「<a href="https://yuuseibe.github.io/endula/privacy.html#">こちら</a>」をご覧ください。</p>
+        </li>
+        <li>
+          <h4>Q: DiscordのBotの特権について教えてください。</h4>
+          <p>A: Botが必要とする特権については、Bot追加リンクから確認いただけます。</p>
+        </li>
+        <li>
+          <h4>Q: 通報した内容の処理状況を確認する方法はありますか？</h4>
+          <p>A: 通報した内容の処理状況については、通報後に送信されるメッセージにてお知らせします。</p>
+        </li>
+        <li>
+          <h4>Q: フォームの入力内容を修正したいです。</h4>
+          <p>A: フォームの入力内容を修正するには、再度該当するフォームから新たに入力してください。前回の入力は無効となります。</p>
+        </li>
+        <li>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="loading-container" id="loadingContainer">
+    <div class="spinner"></div>
+    <p id="loadingText">Loading... 0%</p>
+    <p>We are very sorry.<br>Loading.</p>
+</div>
+
+<script>
+// Discordにメッセージを送信する関数
+function sendDiscordMessage(message) {
+    const webhookURL = 'https://discord.com/api/webhooks/1258029058877554719/45-40DQrtl29U9YND-iytIbmuWUyme_lXpdBUrVOh5aq0BA28bEKhvzwgTRPZL40Xgsd'; // ここに自分のWebhookのURLを入力する
+    const payload = {
+        content: message
+    };
+    fetch(webhookURL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        alert('Discordにメッセージを送信しました！');
+    })
+    .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+        alert('メッセージの送信に失敗しました。');
+    });
+}
+  
+    // 通報フォームの表示切り替え
+    document.getElementById('report-link').addEventListener('click', function(event) {
+      event.preventDefault();
+      document.querySelector('.greeting-container').classList.add('hidden'); // 挨拶文を非表示にする
+      document.getElementById('report-form').style.display = 'block';
+      document.getElementById('question-form').style.display = 'none';
+      document.getElementById('faq-content').style.display = 'none'; // FAQコンテンツも非表示にする
+    });
+  
+    // 質問フォームの表示切り替え
+    document.getElementById('question-link').addEventListener('click', function(event) {
+      event.preventDefault();
+      document.querySelector('.greeting-container').classList.add('hidden'); // 挨拶文を非表示にする
+      document.getElementById('question-form').style.display = 'block';
+      document.getElementById('report-form').style.display = 'none';
+      document.getElementById('faq-content').style.display = 'none'; // FAQコンテンツも非表示にする
+    });
+  
+    // よくあるご質問の表示切り替え
+    document.getElementById('faq-link').addEventListener('click', function(event) {
+      event.preventDefault();
+      document.querySelector('.greeting-container').classList.add('hidden'); // 挨拶文を非表示にする
+      document.getElementById('faq-content').style.display = 'block';
+      document.getElementById('report-form').style.display = 'none';
+      document.getElementById('question-form').style.display = 'none';
+    });
+  
+    // F1キーの状態を追跡するための変数
+    let f1KeyPressed = false;
+  
+    // F1キーが押された時の処理
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'F1') {
+        const header = document.querySelector('.header');
+        const footer = document.querySelector('.footer');
+        if (header.style.display === 'none') {
+          header.style.display = 'flex';
+          footer.style.display = 'block';
+        } else {
+          header.style.display = 'none';
+          footer.style.display = 'none';
+        }
+      }
+    });
+  
+    // ページの読み込み完了後の処理
+    document.addEventListener('DOMContentLoaded', function() {
+      let progress = 0;
+      const loadingText = document.getElementById('loadingText');
+      const loadingContainer = document.getElementById('loadingContainer');
+      const loginContainer = document.getElementById('loginContainer');
+  
+      const interval = setInterval(() => {
+        progress += 1;
+        loadingText.textContent = `Loading... ${progress}%`;
+        if (progress >= 100) {
+          clearInterval(interval);
+          loadingContainer.style.display = 'none';
+          loginContainer.style.display = 'flex';
+        }
+      }, 10); // 10msごとに1%ずつ進行
+    });
+  
+  </script>
+  
+  
+<footer class="footer">
+  <div>
+    <a href="https://yuuseibe.github.io/endula/eula.html#">利用規約</a>
+    <a href="https://discord.com/oauth2/authorize?client_id=1247869959569145946&permissions=1759218604441591&response_type=code&redirect_uri=https%3A%2F%2Fyuuseibe.github.io%2Fendula%2Feula.html&integration_type=0&scope=bot+email">Botを追加する</a>
+  </div>
+  <div>&copy; 2024 Operating Bot制作委員会</div>
+</footer>
+
+</body>
+</html>
